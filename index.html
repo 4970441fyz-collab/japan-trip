@@ -214,7 +214,7 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 </div>
 <!-- ========== ПЕРЕЛЁТЫ ========== -->
 <!-- ========== ПЕРЕЛЁТЫ ========== -->
-<div class="section collapsed">
+<div class="section collapsed" data-group="anya">
 <div class="section-head sh-hotels" onclick="toggleSection(this)" style="background:#37474f">✈️ Перелёты — Аня и Вова (у Ники и Тёмы обратный рейс другой)</div>
 <div class="section-body">
 <div class="tl"><span class="tl-time">Туда</span><div class="tl-text">
@@ -716,7 +716,7 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Японские кухонные ножи и керамика на Каппабаши</li><li>Лаковые подносы и посуда тецубин</li></ul></div></div></div>
 </div>
 <!-- ========== БЮДЖЕТ ========== -->
-<div class="section collapsed">
+<div class="section collapsed" data-group="anya">
 <div class="section-head sh-budget" onclick="toggleSection(this)">💴 Примерный бюджет — Аня и Вова (транспорт + жильё, ноябрь-пик)<span class="chevron">▾</span></div>
 <div class="section-body" style="padding:0">
 <div class="budget-grid">
@@ -909,6 +909,12 @@ function applyFilters(){
     var cityAttr = (day.getAttribute('data-city') || '').split(' ');
     var cityMatch = (selectedCities.length === 0) || selectedCities.some(function(c){ return cityAttr.indexOf(c) !== -1; });
     day.style.display = (personMatch && cityMatch) ? '' : 'none';
+  });
+
+  document.querySelectorAll('.section[data-group]').forEach(function(section){
+    var g = section.getAttribute('data-group');
+    var personMatch = (currentPersonFilter === 'all') || (g === 'all') || (g === currentPersonFilter);
+    section.style.display = personMatch ? '' : 'none';
   });
 
   document.querySelectorAll('.phase[data-group]').forEach(function(phase){
