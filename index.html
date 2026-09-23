@@ -164,6 +164,16 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 .phase{cursor:pointer;user-select:none}
 .phase .chevron{font-size:1.1em;transition:transform .2s;flex-shrink:0}
 .phase.collapsed .chevron{transform:rotate(-90deg)}
+
+
+/* ===== CITY FILTER BAR ===== */
+.city-filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.city-btn{border:2px solid #ddd;background:#fff;border-radius:16px;padding:6px 14px;font-weight:600;font-size:.82em;cursor:pointer;color:#555;transition:.15s}
+.city-btn:hover{border-color:#bbb}
+.city-btn.active{background:#3d5a80;border-color:#3d5a80;color:#fff}
+.city-reset{border:2px dashed #bbb;background:#fff;border-radius:16px;padding:6px 14px;font-weight:600;font-size:.82em;cursor:pointer;color:#888}
+.city-reset:hover{border-color:#888;color:#555}
+.filter-label{font-weight:700;font-size:.82em;color:#888;margin:0 4px 4px 0;align-self:center}
 </style>
 </head>
 <body>
@@ -171,7 +181,7 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <div class="cover">
 <div>🏯</div>
 <h1>Япония — ноябрь 2026</h1>
-<div class="sub">Осака · Нара · Киото · Киносаки · Токио · Никко</div>
+<div class="sub">Осака · Нара · Киото · Токио · Кавагутико</div>
 <div class="pills">
 <div class="pill">📅 5 — 17 ноября 2026</div>
 <div class="pill">👥 <strong>Аня и Вова</strong> · <strong>Ника и Тёма</strong></div>
@@ -192,9 +202,20 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <button class="filter-btn" data-filter="anya" onclick="setFilter('anya',this)">🟢 Аня и Вова</button>
 <button class="filter-btn" data-filter="nika" onclick="setFilter('nika',this)">💗 Ника и Тёма</button>
 </div>
+<div class="city-filter-bar">
+<span class="filter-label">По городу:</span>
+<button class="city-btn" data-city="osaka" onclick="toggleCity('osaka',this)">🏯 Осака</button>
+<button class="city-btn" data-city="nara" onclick="toggleCity('nara',this)">🦌 Нара</button>
+<button class="city-btn" data-city="kyoto" onclick="toggleCity('kyoto',this)">⛩️ Киото</button>
+<button class="city-btn" data-city="tokyo" onclick="toggleCity('tokyo',this)">🗼 Токио</button>
+<button class="city-btn" data-city="kamakura" onclick="toggleCity('kamakura',this)">⛱️ Камакура</button>
+<button class="city-btn" data-city="fuji" onclick="toggleCity('fuji',this)">🗻 Кавагутико</button>
+<button class="city-reset" onclick="resetCities()">✕ Сбросить города</button>
+</div>
 <!-- ========== ПЕРЕЛЁТЫ ========== -->
-<div class="section">
-<div class="section-head sh-hotels" onclick="toggleSection(this)" style="background:#37474f">✈️ Перелёты<span class="chevron">▾</span></div>
+<!-- ========== ПЕРЕЛЁТЫ ========== -->
+<div class="section collapsed">
+<div class="section-head sh-hotels" onclick="toggleSection(this)" style="background:#37474f">✈️ Перелёты — Аня и Вова (у Ники и Тёмы обратный рейс другой)</div>
 <div class="section-body">
 <div class="tl"><span class="tl-time">Туда</span><div class="tl-text">
 <strong>3 ноября, 23:15</strong> — Москва (Шереметьево, T-C) → Гуанчжоу<br/>
@@ -210,105 +231,35 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <strong>18 ноября, 11:30</strong> — Пекин (Столичный, Т3) → Москва (<strong>Шереметьево, С</strong>), прилёт <strong>15:05</strong> · Air China CA753 · Boeing 777-300 · 8ч 35мин<br/>
 <span class="tag tag-tr">Ханэда Т3 → Асакуса: Keikyu Line, ~40 мин, ~600 ¥/чел.</span>
 <span class="tag tag-warn">Выезжать из отеля не позже 18:00 · В аэропорту в 18:45 · Вылет 21:00</span>
-<span class="tag tag-tip">🎉 Рейс стал позже — в Токио лишних 3 часа! Можно спокойно погулять до вечера</span>
+<span class="tag tag-tip">Ника и Тёма летят раньше — их рейс в 15:20, см. день 17 ноября</span>
 </div></div>
 </div>
 </div>
 <!-- ========== ОТЕЛИ ========== -->
-<div class="section">
-<div class="section-head sh-hotels" onclick="toggleSection(this)">🏨 Гостиничный план — что и когда бронировать<span class="chevron">▾</span></div>
+<div class="section collapsed">
+<div class="section-head sh-hotels" onclick="toggleSection(this)">🏨 Наши отели</div>
 <div class="section-body">
 <table>
 <tr>
-<th>#</th>
-<th>Отель / Рёкан</th>
 <th>Даты</th>
-<th>Ночей</th>
-<th>Кто</th>
-<th>Цена (пик, за 2 чел.)</th>
-<th>Статус</th>
+<th>Отель</th>
 </tr>
 <tr>
-<td>1</td>
-<td>
-<div class="hotel-name">Hotel the Lutheran, Осака</div>
-<div class="hotel-rec">С завтраками. Удобное расположение для Нары и Киото<br/>
-<span style="color:#27ae60">Ника и Тёма выезжают вечером 8-го (едут в Киото), Аня и Вова остаются до утра 9-го</span></div>
-</td>
 <td>5–9 ноября</td>
-<td>4</td>
-<td>Все четверо 5–8 ночей<br/>Аня+Вова: +1 ночь (8→9)</td>
-<td>~14 000–17 000 ¥/ночь<br/><span style="color:#888;font-size:.82em">≈ 9 000–11 000 руб./ночь</span></td>
-<td><span class="status-done">✓ ЗАБРОНИРОВАНО</span></td>
+<td><div class="hotel-name">Hotel the Lutheran, Осака</div>
+<a href="https://www.google.com/maps/search/?api=1&query=Hotel+the+Lutheran+3-1-6+Tanimachi+Chuo-ku+Osaka+540-0012+Japan" target="_blank">3-1-6 Tanimachi, Chuo-ku, Osaka 540-0012 — открыть в Google Maps</a></td>
 </tr>
 <tr>
-<td>2</td>
-<td>
-<div class="hotel-name">Kinosaki Yamamotoya 山本屋</div>
-<div class="hotel-rec">Kinosaki-cho Yushima 643, 669-6101 Тоёока, Хёго<br/>
-          Вид на реку · Tattoo-friendly · Пропуск во все 7 бань включён<br/>
-          ⚠️ <strong>Заезд строго до 18:00</strong> — выезжай из Осаки не позже 13:30!<br/>
-          ⚠️ <strong>Выезд 08:00–10:00</strong> (очень ранний) — завтрак ~07:30, утренний онсен до завтрака<br/>
-          Предавторизация: 23 895 ₽ (возвращается после выезда · Trip.com)</div>
-</td>
-<td>9–10 ноября</td>
-<td>1</td>
-<td>Аня и Вова</td>
-<td><strong>51 460 ¥</strong> (50 600 + 860)<br/><span style="color:#888;font-size:.82em">оплата в отеле · ~33 000 руб.</span><br/><span style="font-size:.8em;color:#666">Тариф без еды · Краб — в городском ресторане</span></td>
-<td><span class="status-done">✓ ЗАБРОНИРОВАНО</span></td>
+<td>9–11 ноября</td>
+<td><div class="hotel-name">VIA INN Kyoto Shijomuromachi</div>
+<a href="https://www.google.com/maps/search/?api=1&query=VIA+INN+Kyoto+Shijomuromachi+551-2+Yamabushiyama-cho+Nakagyo-ku+Kyoto+604-8156+Japan" target="_blank">551-2 Yamabushiyama-cho, Nakagyo-ku, Kyoto 604-8156 — открыть в Google Maps</a></td>
 </tr>
 <tr>
-<td>3</td>
-<td>
-<div class="hotel-name">Hearton Hotel Kita Umeda</div>
-<div class="hotel-rec">3 Chome-12-10 Toyosaki, район Кита, 531-0072 Осака · тел. +81-6-63770810<br/>
-          4 мин пешком до Hankyu Умэда (поезд в Миноо) · 2 мин до ст. Накацу (метро → Синь-Осака)<br/>
-          Студия · 1 односпальная кровать + 1 диван-кровать · Для некурящих · Питание не включено<br/>
-          ⚠️ <strong>Заезд после 14:00</strong> — из Киносаки прибудете ~13:50, в отель ~14:30 ✅<br/>
-          ⚠️ <strong>Выезд до 12:00</strong> — оставить вещи на ресепшне, уехать в Миноо, вернуться к 11:30</div>
-</td>
-<td>10–11 ноября</td>
-<td>1</td>
-<td>Аня и Вова</td>
-<td><strong>5 103 ₽</strong><br/><span style="color:#888;font-size:.82em">предоплата онлайн · уже оплачено</span><br/><span style="font-size:.8em;color:#666">Налог на проживание — доп. при заезде</span></td>
-<td><span class="status-done">✓ ЗАБРОНИРОВАНО</span></td>
-</tr>
-<tr>
-<td>4</td>
-<td>
-<div class="hotel-name">Hotel Keihan Asakusa</div>
-<div class="hotel-rec">2 Chome-12-4 Asakusa, Тайто, 111-0032 Токио · тел. +81-3-58300321<br/>
-          2 мин от ст. Цукуба-экспресс Асакуса · 7 мин пешком до ст. Тобу-Асакуса (поезд в Никко)<br/>
-          Ремонт завершён март 2026 · Свежий интерьер · Нет онсена<br/>
-          ⚠️ <strong>Выезд до 11:00</strong> (17 ноября) — сдать вещи в хранение, уехать в аэропорт вечером<br/>
-          ⚠️ Номера небольшие — чемоданы отправить такюбином из Осаки заранее (прибудут 12.11)</div>
-</td>
-<td>А+В: 11–17 ноября (6 н.)<br/>Н+Т: 13–17 ноября (4 н.)</td>
-<td>6 / 4</td>
-<td>А+В: 2 чел.<br/>Н+Т: 2 чел.</td>
-<td><strong>68 000 ₽</strong> за 6 ночей (А+В)<br/><span style="color:#888;font-size:.82em">≈ 11 300 ₽/ночь · Booking.com</span><br/><span style="font-size:.8em;color:#27ae60">Ника+Тёма — те же даты, тот же отель</span></td>
-<td><span class="status-done">✓ ЗАБРОНИРОВАНО</span></td>
+<td>11–17 ноября</td>
+<td><div class="hotel-name">Hotel Keihan Asakusa</div>
+<a href="https://www.google.com/maps/search/?api=1&query=Hotel+Keihan+Asakusa+2-12-4+Asakusa+Taito-ku+Tokyo+111-0032+Japan" target="_blank">2-12-4 Asakusa, Taito-ku, Tokyo 111-0032 — открыть в Google Maps</a></td>
 </tr>
 </table>
-</div>
-</div>
-<!-- ========== СТРАТЕГИЯ БАГАЖА ========== -->
-<div class="section">
-<div class="section-head sh-luggage" onclick="toggleSection(this)">🧳 Стратегия с багажом — один раз отправить и забыть<span class="chevron">▾</span></div>
-<div class="section-body">
-<div class="lug-step">
-<div class="lug-num">1</div>
-<div class="lug-text"><strong>8 ноября вечером, Hotel the Lutheran, Осака:</strong><br/>Накануне вечером попросите ресепшен организовать Takkyubin (Kuroneko Yamato) — доставку чемоданов в токийский отель. <strong>Указать дату доставки: 11 ноября</strong> (день заезда в Токио). Пикап будет утром 9-го, доставка в Tokyo Hotel Keihan Asakusa — день в день по стандарту сервиса. Стоимость: ~1 500–2 500 ¥ за чемодан.<br/>В Киносаки едете с маленькими рюкзаками на 1 ночь.</div>
-</div>
-<div class="lug-step">
-<div class="lug-num">2</div>
-<div class="lug-text"><strong>9–11 ноября:</strong><br/>Путешествуете налегке: маленький рюкзак в Киносаки → Осака → Миноо → Токио. Ничего тяжёлого не тащите.</div>
-</div>
-<div class="lug-step">
-<div class="lug-num">3</div>
-<div class="lug-text"><strong>11 ноября, заселение в Токио:</strong><br/>Чемоданы уже ждут в отеле — <strong>доставка 11 ноября</strong> указана при отправке. Если приедете до заселения — вещи будут на ресепшне. Всё остальное время в Токио — без перемещения багажа.</div>
-</div>
-<div class="tip-box">💡 Если Takkyubin не получится организовать через отель — камеры хранения на станции Синкансэн (Shin-Osaka), но это менее удобно. Рекомендуем именно Takkyubin.</div>
 </div>
 </div>
 <!-- ================================================================ -->
@@ -316,11 +267,11 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <!-- ================================================================ -->
 <div class="phase ph-osaka" data-group="all" onclick="togglePhase(this)">
 <span>🧡</span>
-<span>ФАЗА 1 — Все четверо вместе: Осака, Нара, Киото</span>
-<span class="phase-note">5–8 ноября · Hotel the Lutheran (уже забронирован) — вечером 8-го группа расходится</span>
+<span>ФАЗА 1 — Все четверо вместе: Осака, Нара</span>
+<span class="phase-note">5–7 ноября · Hotel the Lutheran (уже забронирован)</span>
 <span class="chevron">▾</span></div>
 <!-- 5 ноября - Прилёт -->
-<div class="day" data-group="all">
+<div class="day collapsed" data-city="osaka" data-group="all">
 <div class="day-head dh-osaka" onclick="toggleDay(this)">
 <span>5 ноября (четверг) — Прилёт в Осаку</span>
 <span style="font-weight:400;font-size:.88em">🛬 Прилёт 15:00</span>
@@ -341,7 +292,7 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 </div>
 </div>
 <!-- 6 ноября - Осака -->
-<div class="day" data-group="all">
+<div class="day collapsed" data-city="osaka" data-group="all">
 <div class="day-head dh-osaka" onclick="toggleDay(this)">
 <span>6 ноября (пятница) — Осака: первый день</span>
 <span style="font-weight:400;font-size:.88em">🏯 Город</span>
@@ -367,7 +318,7 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Такояки-магниты и мерч с осьминогом</li><li>Glico Pocky — осакские сезонные вкусы</li><li>Складной веер (сэнсу) в лавках Синсэкай</li><li>Мини-фигурки Glico Man / Билликен (талисман Синсэкай)</li></ul></div></div></div>
 </div>
 <!-- 7 ноября - Нара -->
-<div class="day" data-group="all">
+<div class="day collapsed" data-city="nara" data-group="all">
 <div class="day-head dh-osaka" onclick="toggleDay(this)">
 <span>7 ноября (суббота) — День в Наре</span>
 <span style="font-weight:400;font-size:.88em">🦌 Однодневная поездка</span>
@@ -391,247 +342,161 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <div class="note">🍁 <strong>Момидзи в Наре:</strong> начало ноября — листья ещё могут быть зелёными на равнинах, но в парке вокруг Касуга-тайся уже красиво. Замок Осаки 6-го — тоже хороший вариант для осенних листьев.</div>
 <div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Оленьи печенья «сика-сэмбэй» — можно и себе, не только оленям</li><li>Нара — центр производства туши и кистей для каллиграфии (суми)</li><li>Плюшевые/керамические олени</li><li>Нара-дзукэ — маринованные овощи в саке-осадке</li></ul></div></div></div>
 </div>
-<!-- 8 ноября - Киото -->
-<div class="day" data-group="all">
-<div class="day-head dh-osaka" onclick="toggleDay(this)">
-<span>8 ноября (воскресенье) — День в Киото</span>
-<span style="font-weight:400;font-size:.88em">⛩️ Однодневная поездка</span>
-<span class="chevron">▾</span></div>
-<div class="day-body">
-<div class="tl"><span class="tl-time">8:00</span><div class="tl-text"><strong>Завтрак в отеле</strong></div></div>
-<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Отправление из Осаки в Киото</strong><br/>
-<span class="tag tag-tr">JR Kyoto Line: Osaka → Kyoto, ~15–28 мин (скорый)</span>
-<span class="tag tag-cost">~580 ¥/чел. в одну сторону</span>
-</div></div>
-<div class="tl"><span class="tl-time">9:20</span><div class="tl-text"><strong>Фусими Инари</strong> — тысячи красных тории-ворот. Начинать рано утром — меньше туристов!<br/>
-<span class="tag tag-tr">Поезд JR Nara Line: Kyoto → Inari, 5 мин · Бесплатный вход</span>
-<br/>Подъём до смотровой Ёцудзудж (~45 мин вверх) — оттуда уже отличный вид. Полный круг 2–3 ч, но половины горы достаточно.<br/>
-<span class="tag tag-tip">Чем выше поднимаетесь — тем меньше людей. Толпа тусуется только у основания.</span>
-</div></div>
-<div class="tl"><span class="tl-time">11:30–12:00</span><div class="tl-text"><strong>Перемещение в Арасияму</strong><br/>
-<span class="tag tag-tr">Subway Tōzai Line: Inari → Nijō, пересадка → Saga-Arashiyama · или автобус ~50 мин</span>
-</div></div>
-<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Бамбуковая роща</strong> — 5 мин пешком от ст. Saga-Arashiyama. Утром мало людей — к полудню уже набегают, но ещё нормально.<br/>
-<strong>Мост Тогэцукё</strong> над рекой — в ноябре красные клёны на горах на фоне моста → лучшая фотография Киото! 🍁
-    </div></div>
-<div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Обед в Арасияме</strong> — рекомендуем тофу-рёри (кюисин из соевого творога) или простую лапшу соба с видом на реку.</div></div>
-<div class="tl"><span class="tl-time">14:30</span><div class="tl-text"><strong>Сад Тэнрюдзи</strong> — сад с прудом, созданный в XIV веке. В ноябре — пик момидзи прямо над прудом 🍁<br/>
-<span class="tag tag-cost">Вход (с прудом и садом): 1 000 ¥/чел. Стоит своих денег.</span>
-</div></div>
-<div class="tl"><span class="tl-time">16:30</span><div class="tl-text"><strong>Прогулка по улице Нисики-дори</strong> — «кухня Киото»: крытый рынок с едой. Обед уже был в Арасияме, так что просто проходите насквозь — можно взять на пробу пару местных сладостей (мочи) на дорогу, без обязательной еды.</div></div>
-<div class="tl"><span class="tl-time">17:30</span><div class="tl-text"><strong>Аня и Вова возвращаются в Осаку</strong> (JR или Hankyu от Арасиямы, ~30–40 мин). Ужин в Осаке.<br/>
-<span class="tag tag-tip">Ника и Тёма остаются в Киото на 2 ночи (8–10 ноября) — здесь группа расходится</span>
-</div></div>
-<div class="warn-box">⚠️ Воскресенье в Киото — <strong>очень многолюдно</strong>. В этом плане — только 2 зоны (Фусими и Арасияма), без метаний по всему городу. Главное — выйти из Осаки не позже 8:30 и быть у Фусими до 9:30.</div>
-<div class="tip-box">💡 Кийомидзу-дэра и Гион <strong>убраны из плана</strong> — при воскресном трафике нереально успеть без спешки. Гион можно бегло пройти по пути к Нисики (15 мин), но не стоит планировать как отдельную точку.</div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Ятсухаши — коричные мочи-сладости, визитная карточка Киото</li><li>Матча-сладости и чай (в Нисики-дори или Ясака)</li><li>Керамика Kiyomizu-yaki</li><li>Тэнугуи — тканевые полотенца с киотскими узорами</li><li>Благовония (ко) — киотская школа считается лучшей в Японии</li></ul></div></div></div>
-</div>
-<!-- 9 ноября - Разлёт -->
-<div class="day" data-group="all">
-<div class="day-head dh-osaka" onclick="toggleDay(this)">
-<span>9 ноября (понедельник) — Завтрак, выезд, начало solo</span>
-<span style="font-weight:400;font-size:.88em">🔀 Аня и Вова едут дальше одни</span>
-<span class="chevron">▾</span></div>
-<div class="day-body">
-<div class="tl"><span class="tl-time">9:00–10:00</span><div class="tl-text"><strong>Завтрак в отеле</strong> и <strong>выселение из Hotel the Lutheran</strong><br/>
-<span class="tag tag-tip">Ника и Тёма попрощались ещё вчера вечером в Киото — сегодня едут дальше сами (Киото 8–10 → Токио 10–11 → Камакура 11 → Фудзикавагутико 13). Встреча всей группы — вечером 13-го в Асакусе</span>
-</div></div>
-<div class="tl"><span class="tl-time">10:00</span><div class="tl-text">
-<strong>🧳 Логистика багажа:</strong><br/>
-      Аня и Вова: упаковали маленький рюкзак для Киносаки (1 ночь). <strong>Большие чемоданы отправлены через Takkyubin в токийский отель</strong> (договорились с ресепшеном ещё накануне). Доставка: 11 или 12 ноября.
-    </div></div>
-<div class="tl"><span class="tl-time">11:00–11:30</span><div class="tl-text"><strong>🚂 Аня и Вова → станция Осака, Limited Express Kounotori в Киносаки</strong><br/>
-<span class="tag tag-tr">JR Limited Express Kounotori: Osaka → Kinosaki Onsen, ~2ч 20мин</span>
-<span class="tag tag-cost">~4 200 ¥/чел. · итого ~8 400 ¥ на двоих</span><br/>
-      Поезда идут примерно каждые 1–2 часа, удобный — около 11:30 с Osака Station
-    </div></div>
-<div class="tl"><span class="tl-time">13:50</span><div class="tl-text"><strong>Прибытие в Киносаки-онсэн</strong> 🎉</div></div>
-</div>
-</div>
 <!-- ================================================================ -->
 <!-- ФАЗА 2: АНЯ И ВОВА SOLO -->
 <!-- ================================================================ -->
 <div class="phase ph-solo" data-group="anya" onclick="togglePhase(this)">
 <span>💚</span>
-<span>ФАЗА 2 — Только Аня и Вова: Киносаки · Осака · Токио · Никко</span>
-<span class="phase-note">9–13 ноября</span>
+<span>ФАЗА 2 — Только Аня и Вова: Осака → Киото → Токио</span>
+<span class="phase-note">8–11 ноября</span>
 <span class="chevron">▾</span></div>
-<!-- 9 ноября продолжение - Киносаки -->
-<div class="day" data-group="anya">
+<!-- 8 ноября - Аня и Вова: расслабленная Осака -->
+<div class="day collapsed" data-city="osaka" data-group="anya">
 <div class="day-head dh-solo" onclick="toggleDay(this)">
-<span>9 ноября (продолжение) — Киносаки-онсэн: прибытие</span>
-<span style="font-weight:400;font-size:.88em">♨️ Рёкан</span>
+<span>8 ноября (воскресенье) — Аня и Вова: расслабленная Осака и шопинг</span>
+<span style="font-weight:400;font-size:.88em">💤 Без плана</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">14:00</span><div class="tl-text"><strong>Заселение в рёкан</strong>. Приватная ванна (каширики) — обычно доступна с 15:00</div></div>
-<div class="tl"><span class="tl-time">14:30–17:00</span><div class="tl-text"><strong>Первая ванна в рёкане</strong> (приватная). Отдых, свежий воздух, осенний городок</div></div>
-<div class="tl"><span class="tl-time">18:00</span><div class="tl-text"><strong>Ужин в рёкане</strong> — кайсэки с крабом 🦀. <em>Ноябрь — начало сезона крабов в Киносаки!</em></div></div>
-<div class="tl"><span class="tl-time">19:30</span><div class="tl-text"><strong>Вечерняя прогулка в юката</strong> по улицам Киносаки с фонарями 🏮<br/>
-      Посетить 2–3 из 7 общественных онсэнов города (проход включён в стоимость рёкана).<br/>
-<span class="tag tag-tip">Все 7 публичных бань — tattoo-friendly! Просто идёте и заходите.</span>
+<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Неспешный завтрак</strong><br/>
+<span class="tag tag-tip">Ника и Тёма сегодня выселяются из Lutheran и переезжают в Киото — группа расходится с самого утра, а не вечером, как было в старом плане</span>
 </div></div>
-<div class="note">🌟 Фишка Киносаки: онсэн-ралли в юкате — тот самый открыточный образ Японии. Маленький тихий городок, канал с ивами, деревянные рёканы. Вечером особенно атмосферно.</div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Крабовые сэмбэй (kani senbei)</li><li>Местное сакэ Тадзима</li><li>Мелочи из юкатной ткани — косметички, мешочки</li></ul></div></div></div>
+<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>Шинсайбаши и Америка-мура</strong> — торговые галереи, магазины одежды, стрит-арт, кофейни. Никакой программы, просто гуляете и заходите куда хочется.</div></div>
+<div class="tl"><span class="tl-time">14:00</span><div class="tl-text"><strong>Обед где-нибудь по пути</strong> — Синсайбаши-судзи полон вариантов на любой вкус.</div></div>
+<div class="tl"><span class="tl-time">16:00</span><div class="tl-text"><strong>Umeda Sky Building</strong> (по желанию) — смотровая площадка «парящий сад» на закате, красивый вид на город.<br/>
+<span class="tag tag-cost">Вход: ~1 500 ¥/чел.</span>
+</div></div>
+<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Ужин в Осаке</strong>, ранний отбой — завтра переезд в Киото.</div></div>
+<div class="note">💡 Специально день без программы — после трёх насыщенных дней подряд (прилёт, Осака, Нара) нужен воздух перед Киото.</div>
 </div>
-<!-- 10 ноября - Киносаки → Осака -->
-<div class="day" data-group="anya">
-<div class="day-head dh-solo" onclick="toggleDay(this)">
-<span>10 ноября (вторник) — Киносаки → Осака</span>
-<span style="font-weight:400;font-size:.88em">♨️ → 🌆</span>
-<span class="chevron">▾</span></div>
-<div class="day-body">
-<div class="tl"><span class="tl-time">7:30</span><div class="tl-text"><strong>Завтрак в рёкане</strong> (японский: рис, суп мисо, рыба, тофу)</div></div>
-<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Утренние онсэны</strong> — утром в публичных банях тихо и спокойно<br/>
-<span class="tag tag-tip">Саратамано-ю, Гошоно-ю — хвалят за вид и атмосферу</span>
-</div></div>
-<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>Выселение из рёкана</strong></div></div>
-<div class="tl"><span class="tl-time">11:30</span><div class="tl-text"><strong>Поезд Киносаки → Осака</strong><br/>
-<span class="tag tag-tr">JR Limited Express Kounotori обратно, ~2ч 20мин</span>
-<span class="tag tag-cost">~4 200 ¥/чел. · итого ~8 400 ¥</span>
-</div></div>
-<div class="tl"><span class="tl-time">13:50</span><div class="tl-text"><strong>Прибытие в Осаку (Osaka Station)</strong></div></div>
-<div class="tl"><span class="tl-time">14:30</span><div class="tl-text"><strong>Заселение в Hearton Hotel Kita Umeda</strong> (заезд после 14:00 — успеваете ✅)<br/>
-      Сдать рюкзак в номер, небольшой отдых после дороги.</div></div>
-<div class="tl"><span class="tl-time">15:30–18:00</span><div class="tl-text"><strong>Свободное время в Умэда</strong> — торговые улицы, HEP Five (красный ферис-вил на крыше!), Tenjinbashisuji (самая длинная крытая торговая улица Японии)<br/>
-      Если хочется шоппинга: <strong>Uniqlo LINKS UMEDA</strong> — большой, много всего.<br/>
-<span class="tag tag-cost">Бюджет на ужин: ~2 000–3 500 ¥/чел.</span>
-</div></div>
-<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Ужин в Осаке</strong>. Можно: изакая, якинику (мясо на решётке), или такояки + рамэн</div></div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Магниты и открытки с онсэн-мотивами Киносаки</li><li>Печенье с крабом на упаковке — забавный гостинец</li></ul></div></div></div>
 </div>
-<!-- 11 ноября - Миноо → Токио -->
-<div class="day" data-group="anya">
-<div class="day-head dh-solo" onclick="toggleDay(this)">
-<span>11 ноября (среда) — Парк Миноо → Синкансэн → Токио</span>
-<span style="font-weight:400;font-size:.88em">🍁 → 🚄 → 🗼</span>
+<!-- 9 ноября - Все вместе в Киото -->
+<div class="day collapsed" data-city="kyoto osaka" data-group="all">
+<div class="day-head dh-tokyo" onclick="toggleDay(this)">
+<span>9 ноября (понедельник) — Переезд в Киото, встреча с друзьями</span>
+<span style="font-weight:400;font-size:.88em">⛩️ Киёмидзу-дэра + Гион, все четверо</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">7:30</span><div class="tl-text"><strong>Завтрак</strong> (конбини рядом с отелем). <strong>Оставляем вещи на ресепшне</strong> — Hearton хранит до вечера бесплатно. Формальное выселение (ключ) — по возвращении из Миноо, до 12:00.</div></div>
-<div class="tl"><span class="tl-time">8:00</span><div class="tl-text"><strong>Поезд в парк Миноо (Minoh Park)</strong><br/>
-<span class="tag tag-tr">Metro Midosuji: отель → Umeda (5 мин) → Hankyu Minoh Line → Minoh, ~30 мин</span>
-<span class="tag tag-cost">~300 ¥/чел. в одну сторону</span>
-</div></div>
-<div class="tl"><span class="tl-time">8:40–11:00</span><div class="tl-text"><strong>Прогулка в Миноо</strong> — лесная тропа 2 км до водопада (Minoh Falls, 33 м). В начале ноября горный лес уже красный — один из красивейших маршрутов в Кансае!<br/>
-<span class="tag tag-tip">Местная вкусность: жареные кленовые листья (момидзи-но тэмпура, ~200 ¥) прямо у входа в парк — брать обязательно!</span>
-</div></div>
-<div class="tl"><span class="tl-time">11:30</span><div class="tl-text"><strong>Возврат в Умэда</strong>. Забираем вещи из отеля. Лёгкий обед в Умэда (стоячий рамэн или онигири с собой).</div></div>
-<div class="tl"><span class="tl-time">13:00</span><div class="tl-text"><strong>Метро до Синь-Осаки</strong> (Midosuji Line, 2 остановки, 10 мин). Покупаем что-нибудь вкусное на дорогу в Shinkanzen bento 🍱</div></div>
-<div class="tl"><span class="tl-time">15:00</span><div class="tl-text"><strong>Синкансэн Синь-Осака → Токио</strong><br/>
-<span class="tag tag-tr">Shin-Osaka → Tokyo Station, Nozomi (~2ч 25мин) или Hikari (~3ч 10мин)</span>
-<span class="tag tag-cost">~14 000–14 500 ¥/чел. · итого ~28 000–29 000 ¥ на двоих</span><br/>
-      Купить на Smart-EX онлайн заранее (можно сейчас!).<br/>
-<span class="tag tag-tip">Места D/E правой стороны (нечётные ряды) — вид на Фудзи при ясной погоде! Примерно 1ч 10мин после отправления.</span>
-</div></div>
-<div class="tl"><span class="tl-time">17:30</span><div class="tl-text"><strong>Прибытие в Токио</strong> (Tokyo Station)</div></div>
-<div class="tl"><span class="tl-time">18:00–18:30</span><div class="tl-text"><strong>Заселение в Hotel Keihan Asakusa</strong>. Чемоданы уже ждут — доставлены такюбином сегодня.</div></div>
-<div class="tl"><span class="tl-time">19:30</span><div class="tl-text"><strong>Смотровая Токийской мэрии (Tokyo Metropolitan Government Building) в Синдзюку</strong><br/>
-<span class="tag tag-cost">БЕСПЛАТНО · Работает до 23:00 · 45 этаж, вид 360°</span>
-<span class="tag tag-tr">Metro от Асакусы → Синдзюку, ~35 мин</span><br/>
-      Или — спокойный вечер: ужин в Асакусе, прогулка вдоль реки Сумидагавы с ночным Скайтри в кадре. После долгого дня это тоже хорошо.
+<div class="tl"><span class="tl-time">9:00–10:00</span><div class="tl-text"><strong>Завтрак и выселение из Hotel the Lutheran</strong> (Аня и Вова)</div></div>
+<div class="tl"><span class="tl-time">10:15</span><div class="tl-text"><strong>Переезд в Киото</strong><br/>
+<span class="tag tag-tr">JR Kyoto Line: Osaka → Kyoto, ~15–28 мин (скорый)</span>
+<span class="tag tag-cost">~580 ¥/чел. в одну сторону</span><br/>
+      Заезд в VIA INN Kyoto Shijomuromachi — только с 15:00, но чемоданы можно сдать на ресепшене заранее и налегке идти встречать друзей.
     </div></div>
-<div class="note">🏔️ Смотровая мэрии — один из лучших ночных видов Токио, и бесплатно. Хороший старт для первого токийского вечера.</div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Момидзи-манджу — пирожные в форме кленового листа (фирменная штука Миноо)</li><li>Упаковка жареных кленовых листьев (момидзи-но тэмпура) на вынос — не всегда продают навынос, но спросить стоит</li></ul></div></div></div>
+<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>Встреча с Никой и Тёмой</strong> — они уже второй день в Киото, дальше весь день вместе.</div></div>
+<div style="margin:14px 0 6px;font-weight:700;color:#c0710e;font-size:.9em">📍 Локация 1 — Киёмидзу-дэра</div>
+<div class="tl"><span class="tl-time">11:30</span><div class="tl-text"><strong>Киёмидзу-дэра</strong> — деревянный храм на склоне холма, знаменитая терраса без единого гвоздя, вид на весь Киото.<br/>
+<span class="tag tag-cost">Вход: 400 ¥/чел.</span>
+</div></div>
+<div style="margin:16px 0 6px;font-weight:700;color:#c0710e;font-size:.9em">📍 Локация 2 — Гион (обед)</div>
+<div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Прогулка по Гион</strong> — улица Ханамикодзи, деревянные тя-я (чайные дома), шанс увидеть гейко/майко ближе к вечеру.</div></div>
+<div class="tl"><span class="tl-time">14:30</span><div class="tl-text"><strong>Обед в Гионе</strong> — тофу-кайсэки или удон в тихом переулке.</div></div>
+<div class="tl"><span class="tl-time">17:00</span><div class="tl-text"><strong>Заселение в VIA INN Kyoto Shijomuromachi</strong> (Аня и Вова)<br/>
+<span class="tag tag-tip">Двухместный номер B, 2 односпальные кровати, без питания — уже оплачено (19 475,50 ₽)</span>
+</div></div>
+<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Ужин все вместе</strong> — район Сидзё-Каварамати, куча вариантов в пешей доступности.</div></div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Керамика Kiyomizu-yaki прямо у подножия храма</li><li>Веера и канзаши (заколки) в лавках Гиона</li><li>Ятсухаши — визитная карточка Киото</li></ul></div></div>
 </div>
-<!-- 12 ноября - Никко -->
-<div class="day" data-group="anya">
-<div class="day-head dh-solo" onclick="toggleDay(this)">
-<span>12 ноября (четверг) — Никко: пик осенних листьев</span>
-<span style="font-weight:400;font-size:.88em">🍂 Однодневная поездка</span>
+</div>
+<!-- 10 ноября утро - Фусими Инари, все вместе -->
+<div class="day collapsed" data-city="kyoto" data-group="all">
+<div class="day-head dh-tokyo" onclick="toggleDay(this)">
+<span>10 ноября (вторник, утро) — Фусими Инари, все вместе</span>
+<span style="font-weight:400;font-size:.88em">⛩️ Полдня с друзьями</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">7:00</span><div class="tl-text"><strong>Лёгкий завтрак и выход</strong> — конбини по пути или онигири на вокзале.</div></div>
-<div class="tl"><span class="tl-time">7:30</span><div class="tl-text"><strong>Отправление из Асакусы в Никко</strong><br/>
-<span class="tag tag-tr">Tobu Line: Asakusa (Tobu) → Tobu-Nikko, Limited Express Revaty или Spacia X</span>
-<span class="tag tag-cost">Nikko All Area Pass: ~4 530 ¥/чел. (поезд туда-обратно + все автобусы в нижнем Никко)</span><br/>
-<span class="tag tag-tip">Бронировать места на экспрессе ЗАРАНЕЕ: tobu.co.jp — в ноябре забиты!</span><br/>
-      Время в дороге: ~2 часа
-    </div></div>
-<div class="tl"><span class="tl-time">9:30</span><div class="tl-text"><strong>Прибытие в Никко</strong> — ранний приезд до туристической волны!</div></div>
-<div class="tl"><span class="tl-time">9:40</span><div class="tl-text"><strong>Мост Синкё</strong> (Shinkyo Bridge) — 5 мин пешком от вокзала. Красный лаковый мост через реку, осенние клёны вокруг — одна из самых атмосферных точек Никко.<br/>
-<span class="tag tag-cost">Проход по мосту: 300 ¥/чел. (вид с берега — бесплатно)</span>
+<div class="tl"><span class="tl-time">8:00</span><div class="tl-text"><strong>Завтрак</strong> (в отеле не включён — кафе рядом или конбини)</div></div>
+<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Фусими Инари</strong> — тысячи красных тории-ворот, встречаетесь всей компанией.<br/>
+<span class="tag tag-tr">От отеля до ст. Kyoto, далее JR Nara Line до Inari, ~5 мин · Бесплатный вход</span>
+<br/>Подъём до смотровой Ёцудзудж (~45 мин вверх) — оттуда уже отличный вид. Полный круг 2–3 ч, но половины горы достаточно.<br/>
+<span class="tag tag-tip">Вторник — гораздо спокойнее выходных, торопиться некуда</span>
 </div></div>
-<div class="tl"><span class="tl-time">10:10</span><div class="tl-text"><strong>Святилище Тосёгу</strong> (15 мин пешком от Синкё в гору — красивая аллея кедров!)<br/>
-      Усыпальница Токугавы Иэясу — прообраз Торанаги из «Сёгуна». Позолота, резные ворота Ёмэймон, знаменитые три обезьяны, 5-ярусная пагода.<br/>
-<span class="tag tag-cost">Вход в комплекс Тосёгу: 1 300 ¥/чел.</span><br/>
-      Планировать 1,5–2 часа — спешить не нужно.
-    </div></div>
-<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Обед в Никко</strong> — Юба-рёри (блюда из соевой плёнки, местная гастрономическая гордость), ~1 000–1 500 ¥</div></div>
-<div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Каньон Камманга-фути</strong> (Kanmangafuchi Abyss) — 20 мин пешком от Тосёгу вдоль реки<br/>
-      Ряд из ~70 каменных статуй Дзидзо в мху вдоль скалистого ущелья — завораживающе и совсем без толп. Один из самых магических уголков Никко.<br/>
-<span class="tag tag-cost">БЕСПЛАТНО · Прогулка ~30–40 мин</span>
-</div></div>
-<div class="tl"><span class="tl-time">15:00</span><div class="tl-text"><strong>Неспешное возвращение на вокзал</strong>. Купить сувениры: юба-снеки, никко-лепёшки (нику-ман), маринованные овощи.</div></div>
-<div class="tl"><span class="tl-time">15:30–16:00</span><div class="tl-text"><strong>Обратный поезд в Токио (Асакуса)</strong>, ~2 часа</div></div>
-<div class="tl"><span class="tl-time">17:30–18:00</span><div class="tl-text"><strong>Возврат в отель. Ужин в районе Асакусы</strong> — рамэн или суши у конвейера, всё рядом.</div></div>
-<div class="note">🍁 <strong>12 ноября — пик момидзи в нижнем Никко!</strong> Клёны вдоль аллеи к Тосёгу и у реки Камман — в полном цвету. <strong>Гору к озеру Тюдзэндзи не берём</strong> — в ноябре серпантин Ироха стоит в 2–3-часовых пробках. Нижний Никко — всё лучшее без рисков.</div>
-<div class="tip-box">💡 Весь нижний Никко — пешком. Никакого автобуса на гору, никаких пробок. Ранний выезд (7:30) = приедем до основной волны, Тосёгу ещё пустой.</div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Юба-снеки (соевая плёнка) — местная гастрономическая гордость</li><li>Никко-боро — печенье в форме колокольчика</li><li>Деревянная резьба «три обезьяны» (символ Тосёгу)</li><li>Маринованные овощи (цукэмоно)</li></ul></div></div></div>
+<div class="tl"><span class="tl-time">12:00</span><div class="tl-text"><strong>Обед все вместе</strong>, где-то в районе Инари или по пути обратно в центр.</div></div>
+<div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Тут расходитесь</strong>: Ника и Тёма едут собирать вещи и дальше в Токио, а Аня и Вова — в Арасияму (карточки ниже).</div></div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Ятсухаши — коричные мочи-сладости</li><li>Матча-сладости и чай</li></ul></div></div></div>
 </div>
-<!-- 13 ноября утро - Токио соло, ожидание -->
-<div class="day" data-group="anya">
+<!-- 10 ноября день - Аня и Вова: Арасияма -->
+<div class="day collapsed" data-city="kyoto" data-group="anya">
 <div class="day-head dh-solo" onclick="toggleDay(this)">
-<span>13 ноября (пятница, утро) — Токио: утро до встречи</span>
-<span style="font-weight:400;font-size:.88em">⛩️ Асакуса</span>
+<span>10 ноября (вторник, день) — Аня и Вова: Арасияма вдвоём</span>
+<span style="font-weight:400;font-size:.88em">🎋 Вторая половина дня</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">8:00</span><div class="tl-text"><strong>Завтрак</strong></div></div>
-<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Храм Сэнсодзи</strong> (Асакуса) — утром туристов почти нет. Ворота Каминаримон, главный зал, ладан.<br/>
-      Накамисэ — сувенирная улица, открывается с 9:00–10:00. Нингё-яки (печенье в форме Будды), нингё-то, чай матча.</div></div>
-<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>Обед и прогулка по Асакусе</strong> — старые улочки, рикши, Аsakusa Culture и Tourist Info Center (бесплатная смотровая на 8 этаже!)</div></div>
-<div class="tl"><span class="tl-time">13:00</span><div class="tl-text"><strong>Акихабара</strong> (1 остановка метро) — электроника, аниме, гасяпон. <strong>Mandarake</strong> — лучший выбор по коллекционным фигуркам (3–4 этаж)</div></div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Нингё-яки — печенье в форме божеств, продаётся прямо на Накамисэ</li><li>Каминари-окоси — рисовые крекеры, классика Асакусы</li><li>Складные веера и тэнугуи на Накамисэ</li><li>Японская косметика в лавках рядом с Сэнсодзи</li></ul></div></div></div>
+<div class="tl"><span class="tl-time">14:00</span><div class="tl-text"><strong>Перемещение в Арасияму</strong><br/>
+<span class="tag tag-tr">Subway Tōzai Line: Inari → Nijō, пересадка → Saga-Arashiyama · или автобус ~50 мин</span>
+</div></div>
+<div class="tl"><span class="tl-time">14:45</span><div class="tl-text"><strong>Бамбуковая роща</strong> — 5 мин пешком от ст. Saga-Arashiyama.<br/>
+<strong>Мост Тогэцукё</strong> над рекой — в ноябре красные клёны на горах на фоне моста → лучшая фотография Киото! 🍁
+    </div></div>
+<div class="tl"><span class="tl-time">15:30</span><div class="tl-text"><strong>Сад Тэнрюдзи</strong> — сад с прудом, созданный в XIV веке. В ноябре — пик момидзи прямо над прудом 🍁<br/>
+<span class="tag tag-cost">Вход (с прудом и садом): 1 000 ¥/чел. Стоит своих денег.</span>
+</div></div>
+<div class="tl"><span class="tl-time">17:00</span><div class="tl-text"><strong>Возврат в отель</strong> (JR или Hankyu от Арасиямы, ~30–40 мин). Тихий ужин вдвоём в Киото.</div></div>
+<div class="tip-box">💡 Вторник — намного спокойнее воскресенья, торопиться некуда.</div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Тэнугуи — тканевые полотенца с киотскими узорами</li><li>Благовония (ко) — киотская школа считается лучшей в Японии</li></ul></div></div></div>
+</div>
+<!-- 11 ноября - Аня и Вова: переезд в Токио -->
+<div class="day collapsed" data-city="kyoto tokyo" data-group="anya">
+<div class="day-head dh-solo" onclick="toggleDay(this)">
+<span>11 ноября (среда) — Аня и Вова: спокойный переезд в Токио</span>
+<span style="font-weight:400;font-size:.88em">🚄 Без беготни</span>
+<span class="chevron">▾</span></div>
+<div class="day-body">
+<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Неспешный завтрак, выселение из VIA INN Kyoto</strong> (до 10:00)</div></div>
+<div class="tl"><span class="tl-time">10:30</span><div class="tl-text"><strong>Синкансэн Kyoto → Tokyo</strong><br/>
+<span class="tag tag-tr">Nozomi, ~2ч 15мин</span>
+<span class="tag tag-cost">~14 000 ¥/чел. · итого ~28 000 ¥ на двоих</span><br/>
+<span class="tag tag-tip">Места D/E правой стороны — вид на Фудзи при ясной погоде!</span>
+</div></div>
+<div class="tl"><span class="tl-time">13:00</span><div class="tl-text"><strong>Прибытие в Токио, заселение в Hotel Keihan Asakusa</strong></div></div>
+<div class="tl"><span class="tl-time">15:00</span><div class="tl-text"><strong>Лёгкая прогулка по Асакусе</strong> — Сэнсодзи, Накамисэ, река Сумидагава. Никакого плотного плана — день специально для отдыха после переезда.</div></div>
+<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Ужин в Асакусе</strong>, ранний вечер отдыха.</div></div>
+<div class="note">💡 Никко из плана убрали — вместо ещё одного насыщенного дня-трипа выбрали более спокойный ритм перед Фудзи. 12-го уже общий день с Никой и Тёмой — Harry Potter (см. Фазу 3 ниже).</div>
+</div>
 </div>
 <!-- ================================================================ -->
-<!-- ФАЗА 3: ВСЕ ВМЕСТЕ — ТОКИО -->
+<!-- ФАЗА 2Б: НИКА И ТЁМА SOLO -->
 <!-- ================================================================ -->
 <div class="phase ph-nika" data-group="nika" onclick="togglePhase(this)">
 <span>💗</span>
-<span>ФАЗА 2Б — Ника и Тёма: Киото → Токио → Камакура → Фудзи</span>
-<span class="phase-note">8–13 ноября · Отдельно от Ани и Вовы</span>
+<span>ФАЗА 2Б — Ника и Тёма: Киото → Токио → Камакура</span>
+<span class="phase-note">8–11 ноября · Отдельно от Ани и Вовы</span>
 <span class="chevron">▾</span></div>
-<div class="day" data-group="nika">
+<!-- 8 ноября - Ника и Тёма: переезд в Киото -->
+<div class="day collapsed" data-city="osaka kyoto" data-group="nika">
 <div class="day-head dh-nika" onclick="toggleDay(this)">
-<span>9 ноября (понедельник) — Ника и Тёма: Киёмидзу-дэра и Гион</span>
-<span style="font-weight:400;font-size:.88em">⛩️ Киото, день 2</span>
-<span class="chevron">▾</span>
-</div>
+<span>8 ноября (воскресенье) — Ника и Тёма: переезд в Киото</span>
+<span style="font-weight:400;font-size:.88em">⛩️ Заселение + прогулки</span>
+<span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">8:30</span><div class="tl-text"><strong>Завтрак</strong></div></div>
-<div style="margin:14px 0 6px;font-weight:700;color:#ad1457;font-size:.9em">📍 Локация 1 — Киёмидзу-дэра</div>
-<div class="tl"><span class="tl-time">9:30</span><div class="tl-text"><strong>Киёмидзу-дэра</strong> — деревянный храм на склоне холма, знаменитая терраса без единого гвоздя, вид на весь Киото. В будний день утром — заметно спокойнее, чем в воскресенье с общей группой.<br/>
-<span class="tag tag-cost">Вход: 400 ¥/чел.</span>
+<div class="tl"><span class="tl-time">9:00–10:00</span><div class="tl-text"><strong>Завтрак и выселение из Hotel the Lutheran</strong><br/>
+<span class="tag tag-tip">Аня и Вова остаются в Осаке ещё на день — сегодня группа расходится</span>
 </div></div>
-<div style="margin:16px 0 6px;font-weight:700;color:#ad1457;font-size:.9em">📍 Локация 2 — Гион (обед)</div>
-<div class="tl"><span class="tl-time">11:30</span><div class="tl-text"><strong>Прогулка по Гион</strong> — улица Ханамикодзи, деревянные тя-я (чайные дома), шанс увидеть гейко/майко в начале вечера.</div></div>
-<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Обед в Гионе</strong> — тофу-кайсэки или удон в одном из тихих переулков.</div></div>
-<div class="tl"><span class="tl-time">15:00</span><div class="tl-text"><strong>Свободное время</strong> — рынок Нисики-дори или ещё раз Арасияма, по желанию.</div></div>
-<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Ужин в Киото</strong></div></div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul>
-<li>Керамика Kiyomizu-yaki прямо у подножия храма</li>
-<li>Ятсухаши — если ещё не купили 8-го</li>
-<li>Веера и канзаши (заколки) в лавках Гиона</li>
-</ul></div></div>
+<div class="tl"><span class="tl-time">10:15</span><div class="tl-text"><strong>Переезд в Киото</strong><br/>
+<span class="tag tag-tr">JR Kyoto Line: Osaka → Kyoto, ~15–28 мин</span>
+</div></div>
+<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>Заселение в отель в Киото</strong> (или сдать вещи на ресепшн, если рано)</div></div>
+<div class="tl"><span class="tl-time">12:00–18:00</span><div class="tl-text"><strong>Прогулки по Киото</strong> — в своём темпе, без жёсткого плана. Обед где-то в городе.</div></div>
+<div class="note">💡 Отдельная бронь на Киото ещё не оформлена — нужно закрыть до поездки.</div>
 </div>
 </div>
-<div class="day" data-group="nika">
+<div class="day collapsed" data-city="kyoto tokyo" data-group="nika">
 <div class="day-head dh-nika" onclick="toggleDay(this)">
-<span>10 ноября (вторник) — Ника и Тёма: Киото → Токио</span>
-<span style="font-weight:400;font-size:.88em">🚄 Переезд</span>
+<span>10 ноября (вторник, день) — Ника и Тёма: едут в Токио</span>
+<span style="font-weight:400;font-size:.88em">🚄 Вторая половина дня</span>
 <span class="chevron">▾</span>
 </div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Завтрак, выселение из отеля в Киото</strong></div></div>
-<div class="tl"><span class="tl-time">10:00</span><div class="tl-text"><strong>Синкансэн Kyoto → Tokyo</strong><br/>
+<div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Забирают вещи из отеля в Киото</strong> после Фусими Инари и обеда со всеми</div></div>
+<div class="tl"><span class="tl-time">15:00</span><div class="tl-text"><strong>Синкансэн Kyoto → Tokyo</strong><br/>
 <span class="tag tag-tr">Nozomi, ~2ч 15мин</span>
 <span class="tag tag-cost">~14 000 ¥/чел.</span>
 </div></div>
-<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Прибытие в Токио, заселение</strong><br/>
+<div class="tl"><span class="tl-time">17:30</span><div class="tl-text"><strong>Прибытие в Токио, заселение</strong><br/>
 <span class="tag tag-warn">Отель на 10–13 ноября пока не забронирован — нужно закрыть до поездки</span>
 </div></div>
-<div class="tl"><span class="tl-time">14:00</span><div class="tl-text"><strong>Лёгкий день</strong> — обед и свободная прогулка (Асакуса или Синдзюку), отдых после переезда.</div></div>
 </div>
 </div>
-<div class="day" data-group="nika">
+<div class="day collapsed" data-city="tokyo kamakura" data-group="nika">
 <div class="day-head dh-nika" onclick="toggleDay(this)">
 <span>11 ноября (среда) — Ника и Тёма: Камакура</span>
 <span style="font-weight:400;font-size:.88em">🗾 Однодневная поездка</span>
@@ -659,39 +524,69 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 </ul></div></div>
 </div>
 </div>
-<div class="day" data-group="nika">
-<div class="day-head dh-nika" onclick="toggleDay(this)">
-<span>12 ноября (четверг) — Ника и Тёма: свободный день в Токио</span>
-<span style="font-weight:400;font-size:.88em">💤 Буферный день</span>
-<span class="chevron">▾</span>
-</div>
+<!-- ================================================================ -->
+<!-- ФАЗА 3: ВСЕ ВМЕСТЕ — ТОКИО -->
+<!-- ================================================================ -->
+<div class="phase ph-tokyo" data-group="all" onclick="togglePhase(this)">
+<span>💜</span>
+<span>ФАЗА 3 — Все четверо вместе: Токио</span>
+<span class="phase-note">12–17 ноября · Отель в Асакусе</span>
+<span class="chevron">▾</span></div>
+<!-- 12 ноября - Harry Potter + магазины, все вместе -->
+<div class="day collapsed" data-city="tokyo" data-group="all">
+<div class="day-head dh-tokyo" onclick="toggleDay(this)">
+<span>12 ноября (четверг) — Harry Potter + магазины, все четверо вместе</span>
+<span style="font-weight:400;font-size:.88em">⚡ Волшебный мир + 🏂 шоппинг</span>
+<span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">—</span><div class="tl-text"><strong>Специально без плотной программы</strong> — отдых перед поездкой на Фудзи 13-го. Можно неспешно погулять по Асакусе/Уэно в своём темпе или просто выспаться после Камакуры.</div></div>
-<div class="note">💡 Этот день оставлен буферным осознанно — Камакура накануне и Фудзи на следующий день — уже два насыщенных дня подряд, третий подряд лучше не добавлять.</div>
-</div>
-</div>
-<div class="day" data-group="nika">
-<div class="day-head dh-nika" onclick="toggleDay(this)">
-<span>13 ноября (пятница, день) — Ника и Тёма: Фудзикавагутико</span>
-<span style="font-weight:400;font-size:.88em">🗻 Однодневная поездка</span>
-<span class="chevron">▾</span>
-</div>
-<div class="day-body">
-<div class="tl"><span class="tl-time">7:00</span><div class="tl-text"><strong>Ранний выезд из Токио</strong><br/>
-<span class="tag tag-tr">Автобус Shinjuku → Kawaguchiko, ~2ч</span>
+<div class="tl"><span class="tl-time">8:00</span><div class="tl-text"><strong>Завтрак, встреча и выезд к студии</strong><br/>
+<span class="tag tag-tr">До ст. Тошимаэн (район Нэрима): с пересадкой, ~40–50 мин от Асакусы</span>
 </div></div>
-<div style="margin:14px 0 6px;font-weight:700;color:#ad1457;font-size:.9em">📍 Локация 1 — Озеро Кавагутико</div>
+<div style="margin:14px 0 6px;font-weight:700;color:#7d39a6;font-size:.9em">📍 Локация 1 — Warner Bros. Studio Tour Tokyo</div>
+<div class="tl"><span class="tl-time">9:30</span><div class="tl-text"><strong>Harry Potter Studio Tour Tokyo</strong> — Большой зал Хогвартса, Косой переулок, платформа 9¾, полёт на метле, сливочное пиво, Министерство магии.<br/>
+<span class="tag tag-cost">Билет от ~3 565 ₽/чел. — бронировать заранее на конкретную дату/слот, на четверых</span>
+<span class="tag tag-tip">На полный осмотр — до 4 часов, закладывайте полдня</span>
+</div></div>
+<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Обед прямо в студии</strong> (тематическое кафе со сливочным пивом) или в одном из ресторанов рядом со студией.</div></div>
+<div class="tl"><span class="tl-time">14:00</span><div class="tl-text"><strong>Магазин студии</strong> — эксклюзивные товары, которые продаются только здесь.</div></div>
+<div style="margin:16px 0 6px;font-weight:700;color:#ad1457;font-size:.9em">📍 Локация 2 — Симокитадзава (общий район, дальше — кто куда хочет)</div>
+<div class="tl"><span class="tl-time">15:30</span><div class="tl-text">От Нэримы удобно доехать до Симокитадзавы — там и винтажные сноуборд-магазины Тёмы, и куча других вариантов на любой вкус в 5 минутах друг от друга. Дальше можно разойтись по интересам и встретиться на ужин.<br/>
+<strong>🏂 Тёма:</strong> винтажные сноубордические магазины — стоит заранее набросать список конкретных адресов.<br/>
+<strong>Аня и Вова — альтернатива:</strong><br/>
+      • Винтажная одежда — Симокитадзава вообще главный винтажный район Токио, магазинов десятки, необязательно про сноуборд<br/>
+      • Букинистические магазины — несколько уютных секонд-хенд книжных прямо в районе<br/>
+      • Мелкие керамика/zakka-лавки (посуда, предметы для дома) — разбросаны по боковым улочкам<br/>
+      • Кофейни и кафе для передышки между магазинами
+    </div></div>
+<div class="tl"><span class="tl-time">18:30</span><div class="tl-text"><strong>Ранний ужин рядом</strong>, возврат в Асакусу<br/>
+<span class="tag tag-warn">Завтра подъём в 6 утра на Фудзи — сегодня лучше лечь пораньше</span>
+</div></div>
+<div class="note">💡 Скайтри и Акихабару отсюда убрали — день и так полный. Скайтри легко вписать в свободный отрезок 17-го, он в 10 минутах от отеля.</div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Волшебная палочка (интерактивная или обычная)</li><li>Шарф/значок факультета</li><li>Шоколадные лягушки, драже «Берти Боттс»</li><li>Всё это — только в магазине студии, больше нигде не купить</li></ul></div></div></div>
+</div>
+<!-- 13 ноября - Фудзи вместе -->
+<div class="day collapsed" data-city="tokyo fuji" data-group="all">
+<div class="day-head dh-tokyo" onclick="toggleDay(this)">
+<span>13 ноября (пятница) — Фудзикавагутико, все четверо вместе</span>
+<span style="font-weight:400;font-size:.88em">🗻 Однодневная поездка</span>
+<span class="chevron">▾</span></div>
+<div class="day-body">
+<div class="tl"><span class="tl-time">6:00</span><div class="tl-text"><strong>Ранний подъём, завтрак</strong> — конбини по пути, если отель не кормит так рано</div></div>
+<div class="tl"><span class="tl-time">7:00</span><div class="tl-text"><strong>Встреча всех четверых у автобуса в Синдзюку</strong><br/>
+<span class="tag tag-tr">Автобус Shinjuku → Kawaguchiko, ~2ч</span>
+<span class="tag tag-tip">От Асакусы до Синдзюку ~20–30 мин на метро — рассчитайте время на дорогу</span>
+</div></div>
+<div style="margin:14px 0 6px;font-weight:700;color:#7b3fa0;font-size:.9em">📍 Локация 1 — Озеро Кавагутико</div>
 <div class="tl"><span class="tl-time">9:30</span><div class="tl-text"><strong>Momiji Corridor</strong> у озера Кавагутико — аллея клёнов с видом на Фудзи, пик сезона именно в начале-середине ноября 🍁<br/>
 <span class="tag tag-warn">Фудзи виден только в ясную погоду — проверить прогноз накануне</span>
 </div></div>
 <div class="tl"><span class="tl-time">12:00</span><div class="tl-text"><strong>Обед</strong> — хото (лапша с тыквой в мисо-бульоне), местная специальность региона Яманаси.</div></div>
-<div style="margin:16px 0 6px;font-weight:700;color:#ad1457;font-size:.9em">📍 Локация 2 — Kachi Kachi Yama Ropeway</div>
+<div style="margin:16px 0 6px;font-weight:700;color:#7b3fa0;font-size:.9em">📍 Локация 2 — Kachi Kachi Yama Ropeway</div>
 <div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Канатная дорога Kachi Kachi Yama</strong> — панорама озера и Фудзи сверху, если погода позволяет.<br/>
 <span class="tag tag-cost">~900 ¥/чел.</span>
 </div></div>
 <div class="tl"><span class="tl-time">15:30</span><div class="tl-text"><strong>Обратный автобус в Токио</strong></div></div>
-<div class="tl"><span class="tl-time">17:30</span><div class="tl-text"><strong>Возврат в Токио</strong>, дальше — встреча с Аней и Вовой (см. карточку «Воссоединение» ниже)</div></div>
-<div class="note">🗻 <strong>Аня и Вова в этот день не присоединяются</strong> — у них уже плотный Никко накануне (12-го), а этот день и так под нагрузкой перед вечерней встречей всей четвёркой. Они видели Фудзи из окна Синкансэна 11-го — для их графика этого достаточно.</div>
+<div class="tl"><span class="tl-time">18:00</span><div class="tl-text"><strong>Возврат в Токио, общий ужин</strong> 🥢 — первый настоящий совместный вечер после Осаки. Якинику, идзакая или что-то ещё запоминающееся, рядом с Асакусой.</div></div>
 <div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul>
 <li>Сладости в форме Фудзи-сан</li>
 <li>Сухой хото-набор — увезти домой</li>
@@ -699,33 +594,8 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 </ul></div></div>
 </div>
 </div>
-<div class="phase ph-tokyo" data-group="all" onclick="togglePhase(this)">
-<span>💜</span>
-<span>ФАЗА 3 — Все четверо вместе: Токио</span>
-<span class="phase-note">13–17 ноября · Отель в Асакусе</span>
-<span class="chevron">▾</span></div>
-<!-- 13 ноября вечер - Встреча и дрифт -->
-<div class="day" data-group="all">
-<div class="day-head dh-tokyo" onclick="toggleDay(this)">
-<span>13 ноября (пятница, вечер) — Воссоединение + Дрифт</span>
-<span style="font-weight:400;font-size:.88em">🎉 Встреча группы</span>
-<span class="chevron">▾</span></div>
-<div class="day-body">
-<div class="tl"><span class="tl-time">~17:00–18:30</span><div class="tl-text"><strong>Ника и Тёма прилетают в Токио</strong> из Осаки<br/>
-      Вероятный маршрут: Осака (Итами ITM) → Токио (Ханэда HND), ~1 ч перелёт.<br/>
-<span class="tag tag-tr">Ханэда → Асакуса: Keikyu Line ~40 мин, ~600 ¥. Прибытие в отель ~18:30–19:00</span>
-<span class="tag tag-warn">Уточнить время и аэропорт после покупки билетов — вписать точно!</span>
-</div></div>
-<div class="tl"><span class="tl-time">19:00–20:30</span><div class="tl-text"><strong>Общий ужин — воссоединение!</strong> 🥢<br/>
-      После дороги все устали — выбираем что-то близкое к отелю, вкусное и атмосферное.<br/>
-      Хорошие варианты: якинику (мясо на решётке — идеально для 4-х), идзакая в Асакусе или Уэно.<br/>
-<span class="tag tag-cost">~3 000–5 000 ¥/чел.</span>
-</div></div>
-<div class="tip-box">💡 <strong>Дрифт-тур перенесён на 14 или 15 ноября</strong> — когда все выспятся и будет настрой. Сегодня просто встреча и ужин.</div>
-</div>
-</div>
 <!-- 14 ноября - Сибуя, Харадзюку -->
-<div class="day" data-group="all">
+<div class="day collapsed" data-city="tokyo" data-group="all">
 <div class="day-head dh-tokyo" onclick="toggleDay(this)">
 <span>14 ноября (суббота) — Сибуя, Харадзюку, шоппинг</span>
 <span style="font-weight:400;font-size:.88em">🛍️ Районы</span>
@@ -748,89 +618,94 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <span class="tag tag-tip">Бронировать слот онлайн заранее на shibuya-scramble-square.com — в ноябре всё занято!</span>
 </div></div>
 <div class="tl"><span class="tl-time">19:30</span><div class="tl-text"><strong>Ужин в Сибуя или Синдзюку</strong></div></div>
-<div class="tl"><span class="tl-time">21:00</span><div class="tl-text"><strong>🏎️ Токийский дрифт — едем все четверо!</strong><br/>Решено: дрифт/картинг-тур через Tripster (рус. гид) или Klook — общая активность, без альтернатив.<br/><span class="tag tag-cost">8 000–15 000 ¥/чел.</span><span class="tag tag-warn">Бронировать за 3–7 дней до даты — слоты разбирают</span></div></div>
+<div class="tl"><span class="tl-time">21:00</span><div class="tl-text"><strong>🏎️ JDM-тур: парковка Дайкоку + Токийская телебашня — едем все четверо!</strong><br/>
+Групповая экскурсия (присоединение к группе): магазин запчастей/книг/одежды A PIT AutoBacs, легендарная встреча автолюбителей на парковке Daikoku PA, культовые японские авто (GTR, Lancer Evo и другие) — можно сфотографироваться и прокатиться на двух разных машинах, плюс заезд к Токийской телебашне.<br/>
+<span class="tag tag-cost">от 8 992 ₽/чел. (сейчас скидка 5%)</span>
+<span class="tag tag-tip">Бесплатная отмена до 12:00 за 1 день до даты — можно бронировать заранее без риска</span>
+</div></div>
 <div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Kawaii-аксессуары с Такэситадори</li><li>Лимитированные коллекции Uniqlo/GU в Харадзюку</li><li>Косметика в @cosme store (Харадзюку/Сибуя)</li><li>Крепы в упаковке на вынос — скорее вкусный сувенир, чем предмет</li></ul></div></div></div>
 </div>
-<!-- 15 ноября - Асакуса, Уэно, Акихабара -->
-<div class="day" data-group="all">
+<!-- 15 ноября - teamLab, Azabudai Hills, Tokyo Tower -->
+<div class="day collapsed" data-city="tokyo" data-group="all">
 <div class="day-head dh-tokyo" onclick="toggleDay(this)">
-<span>15 ноября (воскресенье) — Уэно, Акихабара, Токийский Скайтри</span>
-<span style="font-weight:400;font-size:.88em">🗼 Восточный Токио</span>
+<span>15 ноября (воскресенье) — teamLab (Аня и Вова) / свободный день (Ника и Тёма)</span>
+<span style="font-weight:400;font-size:.88em">✨ Расходитесь по интересам</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">8:30</span><div class="tl-text"><strong>Завтрак. Сэнсодзи утром</strong> (если ещё не ходили в этот час) — тихо и красиво</div></div>
-<div class="tl"><span class="tl-time">10:00</span><div class="tl-text"><strong>Tokyo Skytree</strong> — 634 м, самая высокая башня Японии. Темпо-дэк (350 м): 2 100 ¥, Темпо Гаррери (450 м): +1 000 ¥<br/>
-<span class="tag tag-tr">Пешком ~15 мин от Асакусы</span>
-<span class="tag tag-tip">Бронировать слот онлайн, в ноябре очереди</span>
+<div class="tl"><span class="tl-time">9:30</span><div class="tl-text"><strong>Завтрак</strong>, не спеша после вчерашнего Фудзи</div></div>
+<div style="margin:14px 0 6px;font-weight:700;color:#7b3fa0;font-size:.9em">📍 Аня и Вова — teamLab Borderless</div>
+<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>teamLab Borderless</strong> (Azabudai Hills) — иммерсивный арт в тёмных залах, невесомость и зеркала.<br/>
+<span class="tag tag-cost">3 200 ¥/чел.</span>
+<span class="tag tag-tip">Бронировать заранее: teamlab.art — слоты разбирают</span>
 </div></div>
-<div class="tl"><span class="tl-time">12:00</span><div class="tl-text"><strong>Обед в Асакусе</strong> — суши на конвейере, тэмпура, или рамэн</div></div>
-<div class="tl"><span class="tl-time">13:30</span><div class="tl-text"><strong>Парк Уэно</strong> — один из лучших в Токио для момидзи! Осенние клёны вдоль прудов. <strong>Токийский национальный музей</strong> (1 000 ¥) — крупнейшая коллекция японского искусства в мире</div></div>
-<div class="tl"><span class="tl-time">16:30</span><div class="tl-text"><strong>Акихабара</strong> (1 остановка от Уэно)<br/>
-      • Mandarake — аниме-коллекционка (3–4 этаж)<br/>
-      • Yodobashi Camera — электроника, 8 этажей<br/>
-      • Don Quijote (Донки) — всё подряд дёшево, гасяпон-автоматы
-    </div></div>
-<div class="tl"><span class="tl-time">19:30</span><div class="tl-text"><strong>Ужин в Акихабаре</strong></div></div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Фигурки и гасяпон-капсулы из Акихабары (Mandarake, Yodobashi)</li><li>Мерч Skytree — талисман Sorakara-chan</li><li>Открытки и каталоги Токийского национального музея</li><li>Ретро-игры и приставки в Акихабаре</li></ul></div></div></div>
+<div class="tl"><span class="tl-time">15:30</span><div class="tl-text"><strong>Tokyo Tower</strong> — по желанию, рядом с Azabudai Hills.<br/>
+<span class="tag tag-cost">Главная смотровая: ~1 200 ¥/чел.</span>
+</div></div>
+<div style="margin:16px 0 6px;font-weight:700;color:#ad1457;font-size:.9em">📍 Ника и Тёма — свой день</div>
+<div class="tl"><span class="tl-time">—</span><div class="tl-text">teamLab не их — несколько вариантов, разворачивайте список ниже.</div></div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">📋 Варианты для Ники и Тёмы на 15 ноября<span class="sv-chevron">▾</span></div><div class="souvenir-body">
+<p style="margin:8px 0 4px"><strong>1. Янака (старый Токио)</strong></p>
+<ul><li>Тихий район, переживший войну без разрушений — узкие улочки, храмы, старые деревянные дома, много кошек</li><li>Янака Гиндза — ретро-торговая улица с сэмбэй и мэнчи-кацу на вынос</li><li>Кладбище Янака — неожиданно красивое место для прогулки, особенно с осенними деревьями</li></ul>
+<p style="margin:12px 0 4px"><strong>2. Китидзёдзи + парк Инокасира</strong></p>
+<ul><li>Парк с прудом, можно взять лодку</li><li>Harmonica Yokocho — крошечные бары и закусочные, атмосфера старого Токио</li><li>Стильные бутики и винтажные магазины в самом Китидзёдзи</li><li>Если получится достать билеты — рядом музей Ghibli (бронировать за месяц вперёд, шанс невелик так близко к дате)</li></ul>
+<p style="margin:12px 0 4px"><strong>3. Дайканъяма + Накамэгуро</strong></p>
+<ul><li>T-SITE (Tsutaya) — один из красивейших книжных магазинов мира, огромный выбор, кафе внутри</li><li>Канал Мэгуро-гава — приятная набережная, стильные маленькие магазины и кофейни</li><li>Обед: бранч в одной из множества кафе Накамэгуро</li></ul>
+<p style="margin:12px 0 4px"><strong>4. Одайба</strong></p>
+<ul><li>teamLab Planets (другой формат teamLab, другая площадка — босиком по воде, другие инсталляции)</li><li>Вид на мост Рэйнбоу-бридж, статуя Гандама, торговые центры DiverCity и Aqua City</li><li>Обед: фудкорты в торговых центрах — большой выбор</li></ul>
+<p style="margin:12px 0 4px;color:#888;font-size:.9em">Все четыре варианта — в пределах часа от Асакусы, можно сочетать с лёгким ужином вместе с Аней и Вовой вечером, если получится состыковаться по времени.</p>
+</div></div>
 </div>
-<!-- 16 ноября - Harry Potter Studio Tour -->
-<div class="day" data-group="all">
+</div>
+<!-- 16 ноября - Синдзюку, Кабукичо, шоппинг -->
+<div class="day collapsed" data-city="tokyo" data-group="all">
 <div class="day-head dh-tokyo" onclick="toggleDay(this)">
-<span>16 ноября (понедельник) — Harry Potter Studio Tour Tokyo</span>
-<span style="font-weight:400;font-size:.88em">⚡ Все четверо</span>
+<span>16 ноября (понедельник) — Синдзюку Гёэн, Кабукичо, финальный шоппинг</span>
+<span style="font-weight:400;font-size:.88em">🍁 Парк + 🏮 Ночная жизнь</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">8:00</span><div class="tl-text"><strong>Завтрак, выезд из Асакусы</strong><br/>
-<span class="tag tag-tr">До ст. Тошимаэн (район Нэрима): с пересадкой, ~40–50 мин от Асакусы</span>
+<div class="tl"><span class="tl-time">9:00</span><div class="tl-text"><strong>Завтрак</strong></div></div>
+<div style="margin:14px 0 6px;font-weight:700;color:#7d39a6;font-size:.9em">📍 Локация 1 — Синдзюку Гёэн</div>
+<div class="tl"><span class="tl-time">10:00</span><div class="tl-text"><strong>Парк Синдзюку Гёэн</strong> — 58 гектаров, японский + английский + французский сады. Пик момидзи 🍁<br/>
+<span class="tag tag-tr">Metro: Asakusa → Shinjuku-Gyoemmae, ~30 мин</span>
+<span class="tag tag-cost">Вход: 500 ¥/чел.</span>
 </div></div>
-<div style="margin:14px 0 6px;font-weight:700;color:#7d39a6;font-size:.9em">📍 Локация 1 — Warner Bros. Studio Tour Tokyo</div>
-<div class="tl"><span class="tl-time">9:30</span><div class="tl-text"><strong>Harry Potter Studio Tour Tokyo</strong> — Большой зал Хогвартса, Косой переулок, платформа 9¾, полёт на метле, сливочное пиво, Министерство магии.<br/>
-<span class="tag tag-cost">Билет от ~3 565 ₽/чел. — бронировать заранее на конкретную дату/слот</span>
-<span class="tag tag-tip">На полный осмотр — до 4 часов, закладывайте полдня</span>
+<div class="tl"><span class="tl-time">12:00</span><div class="tl-text"><strong>Обед в Синдзюку</strong></div></div>
+<div style="margin:16px 0 6px;font-weight:700;color:#7d39a6;font-size:.9em">📍 Локация 2 — Шоппинг + Кабукичо/Омоиде Йокочо</div>
+<div class="tl"><span class="tl-time">13:00–17:00</span><div class="tl-text"><strong>Финальный шоппинг, Синдзюку</strong><br/>
+      • Isetan — лучший универмаг Токио, продукты в подвале<br/>
+      • Uniqlo Shinjuku, Takashimaya Times Square<br/>
+<span class="tag tag-warn">Tax Free: от 5 000 ¥ за покупку — оформить с паспортом!</span>
 </div></div>
-<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Обед прямо в студии</strong> (тематическое кафе с сливочным пивом) или в одном из ресторанов рядом со студией.</div></div>
-<div class="tl"><span class="tl-time">14:00</span><div class="tl-text"><strong>Магазин студии</strong> — эксклюзивные товары, которые продаются только здесь.</div></div>
-<div style="margin:16px 0 6px;font-weight:700;color:#7d39a6;font-size:.9em">📍 Локация 2 — возвращение в Асакусу, отдых</div>
-<div class="tl"><span class="tl-time">15:30</span><div class="tl-text"><strong>Возврат в отель</strong>, отдых после насыщенного дня</div></div>
-<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Прощальный ужин вчетвером</strong> — что-то памятное. Якинику, тэппаняки или кайсэки</div></div>
-<div class="tl"><span class="tl-time">21:00</span><div class="tl-text"><strong>Смотровая мэрии Токио (Синдзюку)</strong> — если ещё не ходили. Бесплатно, до 23:00<br/>
-      Или: Golden Gai (маленькие бары у Синдзюку) — атмосфера старого Токио</div></div>
-<div class="note">🍁 Синдзюку Гёэн и финальный шоппинг перенесены на утро 17-го — после отъезда Ники и Тёмы в аэропорт у Ани и Вовы остаётся отдельный свободный отрезок дня.</div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Волшебная палочка (интерактивная или обычная)</li><li>Шарф/значок факультета</li><li>Шоколадные лягушки, драже «Берти Боттс»</li><li>Всё это — только в магазине студии, больше нигде не купить</li></ul></div></div></div>
+<div class="tl"><span class="tl-time">19:00</span><div class="tl-text"><strong>Прощальный ужин вчетвером</strong> в Omoide Yokocho — крошечные якитория-переулки, атмосфера старого Токио</div></div>
+<div class="tl"><span class="tl-time">21:00</span><div class="tl-text"><strong>Кабукичо</strong> — неоновые улицы, самый известный ночной квартал Токио. Просто погулять и посмотреть — самому по себе безопасно даже поздно.</div></div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Сладости из продуктового этажа Isetan</li><li>Косметика беспошлинно в Синдзюку</li><li>Лимитированные коллекции Uniqlo/GU</li></ul></div></div></div>
 </div>
 <!-- 17 ноября - Вылет -->
-<div class="day" data-group="all">
+<div class="day collapsed" data-city="tokyo" data-group="all">
 <div class="day-head dh-flight" onclick="toggleDay(this)">
 <span>17 ноября (вторник) — Каппабаши вместе, дальше Аня и Вова одни</span>
 <span style="font-weight:400;font-size:.88em">✈️ Прощай, Япония!</span>
 <span class="chevron">▾</span></div>
 <div class="day-body">
-<div class="tl"><span class="tl-time">7:30</span><div class="tl-text"><strong>Завтрак в отеле или кафе у Накамисэ</strong></div></div>
-<div style="margin:14px 0 6px;font-weight:700;color:#546e7a;font-size:.9em">📍 Локация 1 — Каппабаши (все четверо)</div>
-<div class="tl"><span class="tl-time">8:30–10:30</span><div class="tl-text"><strong>Улица Каппабаши (Kappabashi)</strong> — 15 мин пешком от отеля! 🍶<br/>
+<div class="tl"><span class="tl-time">7:00</span><div class="tl-text"><strong>Завтрак в отеле или кафе у Накамисэ</strong><br/>
+<span class="tag tag-warn">Ника и Тёма: рейс в 15:20 — раньше вашего, утро будет плотнее</span>
+</div></div>
+<div class="tl"><span class="tl-time">8:00–9:45</span><div class="tl-text"><strong>Улица Каппабаши (Kappabashi)</strong> — 15 мин пешком от отеля! 🍶<br/>
       Профессиональная кухонная улица — туда ходят рестораны за посудой. Но продают всем.<br/>
       • <strong>Японская керамика</strong> — бесконечный выбор: чашки матча, рамэн-бовлы, тарелки, чайники тецубин<br/>
       • <strong>Лаковые изделия, деревянные подносы</strong> — настоящие, не сувенирные<br/>
       • <strong>Нори-формочки, оригинальные кухонные ножи</strong> — везти в Россию удобно<br/>
-      Цены нормальные (не туристические), можно торговаться в мелких магазинах.<br/>
 <span class="tag tag-tip">Лучший вариант для качественной японской посуды — лучше чем любой сувенирный магазин</span>
 </div></div>
-<div class="tl"><span class="tl-time">10:45</span><div class="tl-text"><strong>Выселение из отеля (до 11:00)</strong>. Большие вещи Ани и Вовы — сдать на ресепшен, заберём перед отъездом.<br/>
-<span class="tag tag-warn">Ника и Тёма: рейс в 15:20 — собираются и едут в аэропорт около 12:00–12:30, дальше отдельно от группы</span>
+<div class="tl"><span class="tl-time">10:00</span><div class="tl-text"><strong>Выселение из отеля</strong>. Ника и Тёма забирают свои вещи полностью, Аня и Вова сдают на ресепшен (заберут вечером).<br/>
+<span class="tag tag-warn">Ника и Тёма: едут в Ханэда около 12:00–12:30 (рейс 15:20) — дальше отдельно от группы</span>
 </div></div>
-<div style="margin:16px 0 6px;font-weight:700;color:#546e7a;font-size:.9em">📍 Локация 2 — Синдзюку Гёэн + шоппинг (Аня и Вова)</div>
-<div class="tl"><span class="tl-time">11:30</span><div class="tl-text"><strong>Парк Синдзюку Гёэн</strong> — 58 гектаров, японский + английский + французский сады. Пик момидзи 🍁<br/>
-<span class="tag tag-tr">Metro: Asakusa → Shinjuku-Gyoemmae, ~30 мин</span>
-<span class="tag tag-cost">Вход: 500 ¥/чел.</span>
+<div style="margin:16px 0 6px;font-weight:700;color:#546e7a;font-size:.9em">📍 Локация 2 — свободное время (Аня и Вова)</div>
+<div class="tl"><span class="tl-time">11:00</span><div class="tl-text"><strong>Обед в Асакусе</strong></div></div>
+<div class="tl"><span class="tl-time">12:30</span><div class="tl-text"><strong>Tokyo Skytree</strong> (по желанию) — 10–15 мин пешком от отеля, тот самый вид, который выпал из 12-го числа из-за Harry Potter.<br/>
+<span class="tag tag-cost">Смотровая: ~2 100 ¥/чел.</span>
 </div></div>
-<div class="tl"><span class="tl-time">13:00</span><div class="tl-text"><strong>Обед в Синдзюку</strong></div></div>
-<div class="tl"><span class="tl-time">14:00–17:30</span><div class="tl-text"><strong>Финальный шоппинг, Синдзюку</strong><br/>
-      • <strong>Isetan</strong> — лучший универмаг Токио, продукты в подвале (японские конфеты, чай)<br/>
-      • <strong>Uniqlo Shinjuku</strong> — большой, много размеров, лимитированные коллекции<br/>
-      • Takashimaya Times Square — 14 этажей магазинов<br/>
-      • <strong>Обменник в Синдзюку</strong> — лучший курс в Токио<br/>
-<span class="tag tag-warn">Налог Tax Free: от 5 000 ¥ за покупку — оформить в магазине с паспортом!</span>
-</div></div>
+<div class="tl"><span class="tl-time">15:00–17:30</span><div class="tl-text"><strong>Свободное время в Асакусе</strong> — не спеша, без плана: докупить сувениры, посидеть в кафе у реки.</div></div>
 <div class="tl"><span class="tl-time">18:00</span><div class="tl-text"><strong>Забираем вещи из отеля и выезжаем в Ханэда</strong><br/>
 <span class="tag tag-tr">Keikyu Line: Asakusa → Haneda T3, ~40 мин, ~600 ¥/чел.</span><br/>
       Прибытие в аэропорт ~18:45 — регистрация откроется, вылет в 21:00.
@@ -838,17 +713,17 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <div class="tl"><span class="tl-time">21:00</span><div class="tl-text"><strong>Вылет Ханэда Т3 → Пекин</strong> · Air China CA422, прилёт <strong>18 ноября 00:20</strong> (Столичный, Т3)</div></div>
 <div class="tl"><span class="tl-time">18 ноября</span><div class="tl-text"><strong>11:30 — Пекин Столичный Т3 → Москва Шереметьево</strong> · Air China CA753, прилёт <strong>15:05</strong> 🏠</div></div>
 <div class="tip-box">💡 Дьюти-фри Ханэда: KitKat (матча, мисо, клубника), сакэ мини-бутылки, косметика. Но выбор уже и дороже чем Don Quijote — основное купить в городе заранее. В Пекине на пересадке тоже есть магазины, но брать нечего.</div>
-<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Японские кухонные ножи и керамика на Каппабаши</li><li>Лаковые подносы и посуда тецубин</li><li>Сладости из продуктового этажа Isetan (Синдзюку)</li><li>Косметика беспошлинно в Синдзюку — Tax Free с паспортом от 5 000 ¥</li></ul></div></div></div>
+<div class="souvenir-toggle"><div class="souvenir-head" onclick="toggleSouvenir(this)">🎁 Что купить как сувенир здесь<span class="sv-chevron">▾</span></div><div class="souvenir-body"><ul><li>Японские кухонные ножи и керамика на Каппабаши</li><li>Лаковые подносы и посуда тецубин</li></ul></div></div></div>
 </div>
 <!-- ========== БЮДЖЕТ ========== -->
-<div class="section">
+<div class="section collapsed">
 <div class="section-head sh-budget" onclick="toggleSection(this)">💴 Примерный бюджет — Аня и Вова (транспорт + жильё, ноябрь-пик)<span class="chevron">▾</span></div>
 <div class="section-body" style="padding:0">
 <div class="budget-grid">
 <div class="bitem">
-<div class="blabel">Рёкан Киносаки Яматомотоя (1 ночь, без еды)</div>
-<div class="bamount">51 460 ¥</div>
-<div class="brub">≈ 33 450 руб. · оплата в отеле</div>
+<div class="blabel">Доп. ночь Hotel the Lutheran (продление 9→10, вместо Киносаки)</div>
+<div class="bamount">~14 000–17 000 ¥</div>
+<div class="brub">≈ 9 000–11 000 руб. · нужно уточнить у отеля</div>
 </div>
 <div class="bitem">
 <div class="blabel">Hearton Hotel Kita Umeda (1 ночь)</div>
@@ -861,22 +736,22 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 <div class="brub">≈ 58 500–70 200 руб.</div>
 </div>
 <div class="bitem">
-<div class="blabel">Осака → Киносаки → Осака (поезд ×2)</div>
-<div class="bamount">16 800 ¥</div>
-<div class="brub">≈ 10 920 руб.</div>
-</div>
-<div class="bitem">
-<div class="blabel">Синкансэн Осака → Токио (×2 чел.)</div>
+<div class="blabel">Синкансэн Осака → Киото → Токио (×2 чел.)</div>
 <div class="bamount">28 000–29 000 ¥</div>
 <div class="brub">≈ 18 200–18 850 руб.</div>
 </div>
 <div class="bitem">
-<div class="blabel">Никко All Area Pass + экспресс (×2)</div>
-<div class="bamount">12 000–13 000 ¥</div>
-<div class="brub">≈ 7 800–8 450 руб.</div>
+<div class="blabel">VIA INN Kyoto Shijomuromachi (2 ночи)</div>
+<div class="bamount" style="font-size:.95em">19 475,50 ₽</div>
+<div class="brub">предоплата · уже оплачено</div>
+</div>
+<div class="bitem" style="opacity:.6">
+<div class="blabel" style="text-decoration:line-through">Hearton Umeda — отменён</div>
+<div class="bamount" style="font-size:.95em">5 103 ₽</div>
+<div class="brub">уточнить возврат по тарифу</div>
 </div>
 <div class="bitem">
-<div class="blabel">IC-карта Осака + Миноо + Токио (×2)</div>
+<div class="blabel">IC-карта Осака + Киото + Токио (×2)</div>
 <div class="bamount">10 000 ¥</div>
 <div class="brub">≈ 6 500 руб.</div>
 </div>
@@ -902,7 +777,7 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 </div>
 </div>
 <!-- ========== ССЫЛКИ ========== -->
-<div class="section">
+<div class="section collapsed">
 <div class="section-head sh-links" onclick="toggleSection(this)">🔗 Полезные ссылки для бронирования и подготовки<span class="chevron">▾</span></div>
 <div class="section-body">
 <div class="link-item">
@@ -913,24 +788,10 @@ hr.dashed{border:none;border-top:2px dashed #e0d8d0;margin:14px 0}
 </div>
 </div>
 <div class="link-item">
-<span class="link-icon">🏯</span>
+<span class="link-icon">🎁</span>
 <div class="link-text">
-<a href="https://www.tobu.co.jp/en/ticket/nikko/all.html" target="_blank">Nikko All Area Pass — Tobu Railway</a>
-<small>Покрывает поезд из Асакусы + все автобусы в Никко, ~4 530 ¥</small>
-</div>
-</div>
-<div class="link-item">
-<span class="link-icon">♨️</span>
-<div class="link-text">
-<a href="https://www.kinosaki-spa.gr.jp/en/" target="_blank">Официальный сайт Киносаки-онсэн</a>
-<small>Список рёканов, карта онсэнов, тату-политика</small>
-</div>
-</div>
-<div class="link-item">
-<span class="link-icon">🔍</span>
-<div class="link-text">
-<a href="https://tattoo-friendly.jp" target="_blank">Tattoo-Friendly Japan — база тату-дружественных онсэнов</a>
-<small>Проверить конкретный рёкан перед бронированием</small>
+<a href="https://ru.trip.com/things-to-do/detail/108764180?locale=ru-RU&amp;curr=RUB" target="_blank">JDM-тур Дайкоку + Токийская телебашня (Trip.com)</a>
+<small>Тур на 14 ноября — все четверо</small>
 </div>
 </div>
 <div class="link-item">
@@ -1012,13 +873,55 @@ function toggleSouvenir(head){
   var box = head.closest('.souvenir-toggle');
   if(box){ box.classList.toggle('open'); }
 }
+var currentPersonFilter = 'all';
+var selectedCities = [];
+
 function setFilter(group, btn){
   document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  document.querySelectorAll('[data-group]').forEach(function(el){
-    var g = el.getAttribute('data-group');
-    var show = (group === 'all') || (g === 'all') || (g === group);
-    el.style.display = show ? '' : 'none';
+  currentPersonFilter = group;
+  applyFilters();
+}
+
+function toggleCity(city, btn){
+  var idx = selectedCities.indexOf(city);
+  if(idx === -1){
+    selectedCities.push(city);
+    btn.classList.add('active');
+  } else {
+    selectedCities.splice(idx, 1);
+    btn.classList.remove('active');
+  }
+  applyFilters();
+}
+
+function resetCities(){
+  selectedCities = [];
+  document.querySelectorAll('.city-btn').forEach(function(b){ b.classList.remove('active'); });
+  applyFilters();
+}
+
+function applyFilters(){
+  var days = document.querySelectorAll('.day[data-group]');
+  days.forEach(function(day){
+    var g = day.getAttribute('data-group');
+    var personMatch = (currentPersonFilter === 'all') || (g === 'all') || (g === currentPersonFilter);
+    var cityAttr = (day.getAttribute('data-city') || '').split(' ');
+    var cityMatch = (selectedCities.length === 0) || selectedCities.some(function(c){ return cityAttr.indexOf(c) !== -1; });
+    day.style.display = (personMatch && cityMatch) ? '' : 'none';
+  });
+
+  document.querySelectorAll('.phase[data-group]').forEach(function(phase){
+    var g = phase.getAttribute('data-group');
+    var personMatch = (currentPersonFilter === 'all') || (g === 'all') || (g === currentPersonFilter);
+    if(!personMatch){ phase.style.display = 'none'; return; }
+    var el = phase.nextElementSibling;
+    var anyVisible = false;
+    while(el && el.classList.contains('day')){
+      if(el.style.display !== 'none'){ anyVisible = true; }
+      el = el.nextElementSibling;
+    }
+    phase.style.display = anyVisible ? '' : 'none';
   });
 }
 
